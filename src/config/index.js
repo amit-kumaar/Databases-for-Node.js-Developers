@@ -3,10 +3,17 @@ export const config = {
     port: process.env.PORT || 3000
   },
   mongodb:{
-    uri:"mongodb://localhost:27017/nodejs-developers",
+    uri:"mongodb://localhost/simpleshop",
     options:{
       serverSelectionTimeoutMS: 3000,
       socketTimeoutMS: 3000
+    }
+  },
+  mysql: {
+    uri: "mysql://root:root@localhost/simpleshop",
+    options: {
+      dialect: "mysql",
+      logging: false
     }
   },
   session: {
