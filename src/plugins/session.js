@@ -17,13 +17,8 @@ async function sessionPlugin(fastify, config) {
       path: "/",
       httpOnly: true,
       secure: false,
-      maxAge: 3600 // 1-hour session expiration
+      maxAge: 3600 * 1000
     }
-  });
-
-  // Decorate to clear session
-  fastify.decorate("clearSession", (req) => {
-    req.session.delete();
   });
 
   // PreHandler: Attach session messages to locals
@@ -35,12 +30,12 @@ async function sessionPlugin(fastify, config) {
     };
   });
 
-  // Decorate reply.view to clear messages **after** rendering
+  // Clear messages after rendering
   fastify.addHook("onRequest", async (req, reply) => {
-    const originalView = reply.view;
+    const originalView = reply.view.bind(reply);
     reply.view = function (template, data) {
-      const result = originalView.call(this, template, data);
-      req.session.set("messages", []); // Clear messages after rendering
+      const result = originalView(template, data);
+      req.session.set("messages", []);
       return result;
     };
   });
